@@ -11,10 +11,10 @@ public class PdfReader {
             File file = new File("C:\\Users\\Владислав\\Desktop\\Резюме Ерохин Дмитрий Анатольевич.pdf");
             PDDocument document = PDDocument.load(file);
             PDFTextStripper stripper = new PDFTextStripper();
-            String text = stripper.getArticleStart();
-            String[] strings = text.split("\n");
+            String text = stripper.getText(document);
+            String[] strings = text.split("\r\n");
             document.close();
-            return strings[0];
+            return strings[1];
         } catch (Exception e){
           return "error";
         }
