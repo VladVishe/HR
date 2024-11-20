@@ -13,26 +13,33 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PdfReader {
-    public Set<File> listFilesUsingFilesList(String dir) throws IOException {
+    public Set<String> listFilesUsingFilesList(String dir) throws IOException {
         try (Stream<Path> stream = Files.list(Paths.get(dir))) {
             return stream
                     .filter(file -> !Files.isDirectory(file))
                     .map(Path::getFileName)
-                    .map(Path::toFile)
+                    .map(Path::toString)
                     .collect(Collectors.toSet());
         }
     }
     public String getDescription() {
         try {
             String directory ="C:\\Users\\Владислав\\Desktop\\cv";
-            Set<File> files = listFilesUsingFilesList(directory);
-            for (File file:files ) {
+            Set<String> fileNames = listFilesUsingFilesList(directory);
+            for (String fileName:fileNames ) {
+                File file = new File(directory +"\\" + fileName);
                 PDDocument document = PDDocument.load(file);
                 PDFTextStripper stripper = new PDFTextStripper();
                 String text = stripper.getText(document);
                 String[] strings = text.split("\r\n");
                 document.close();
-                System.out.println(strings[1]);
+                String name;
+                if (strings[0].isBlank()) {
+                    name = strings[1];
+                }else {
+                    name = strings[0];
+                }
+                System.out.println(name);
             }
             return "resume";
         } catch (Exception e){
