@@ -22,28 +22,59 @@ public class PdfReader {
                     .collect(Collectors.toSet());
         }
     }
-    public String getDescription() {
+
+    public void parsePDF() {
         try {
-            String directory ="C:\\Users\\Владислав\\Desktop\\cv";
+            String directory = "C:\\Users\\Владислав\\Desktop\\cv";
             Set<String> fileNames = listFilesUsingFilesList(directory);
-            for (String fileName:fileNames ) {
-                File file = new File(directory +"\\" + fileName);
+            for (String fileName : fileNames) {
+                File file = new File(directory + "\\" + fileName);
                 PDDocument document = PDDocument.load(file);
                 PDFTextStripper stripper = new PDFTextStripper();
                 String text = stripper.getText(document);
                 String[] strings = text.split("\r\n");
                 document.close();
-                String name;
-                if (strings[0].isBlank()) {
-                    name = strings[1];
-                }else {
-                    name = strings[0];
-                }
+                String name = findName(strings);
                 System.out.println(name);
+                String number = findNumber(strings);
+                System.out.println(number);
+                String mail = findMail(strings);
+                System.out.println(mail);
             }
-            return "resume";
-        } catch (Exception e){
-          return "error";
+        } catch (Exception e) {
         }
+    }
+
+    private String findName(String[] strings) {
+        String name;
+        if (strings[0].isBlank()) {
+            name = strings[1];
+        } else {
+            name = strings[0];
         }
+        return name;
+    }
+
+    private String findNumber(String[] lines) {
+        for (String line : lines) {
+            if (line.startsWith("+")) {
+                return line;
+            }
+        }
+        return "no number";
+
+    }
+
+    private String findMail(String[] lines) {
+        for (String line : lines) {
+            String[] words = line.replace("\u00a0"," ").split("\\s+");
+            for (String word : words) {
+                if (word.contains("@")) {
+                    return word;
+                }
+            }
+        }
+        return "no mail";
+
+    }
 }
