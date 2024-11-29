@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,7 +25,9 @@ public class PdfReader {
         }
     }
 
-    public void parsePDF() {
+    public ArrayList<Person>  parsePDF() {
+        ArrayList<Person> list=new ArrayList<>();
+
         try {
             String directory = "C:\\Users\\Владислав\\Desktop\\cv";
             Set<String> fileNames = listFilesUsingFilesList(directory);
@@ -35,14 +39,20 @@ public class PdfReader {
                 String[] strings = text.split("\r\n");
                 document.close();
                 String name = findName(strings);
-                System.out.println(name);
+                //list.add(name);
+                //System.out.println(name);
                 String number = findNumber(strings);
-                System.out.println(number);
+                //System.out.println(number);
+                //list.add(number);
                 String mail = findMail(strings);
-                System.out.println(mail);
+                //System.out.println(mail);
+                //list.add(mail);
+                Person person = new Person (name,number,mail);
+                list.add(person);
             }
         } catch (Exception e) {
         }
+        return list;
     }
 
     private String findName(String[] strings) {
